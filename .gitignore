@@ -1,0 +1,60 @@
+# Markdowns
+context_from_beginning.md
+implementation_plan_context.md
+implementation_plan.md
+PHASE0_COMPLETE.md
+
+# Build outputs
+target/
+Cargo.lock
+
+# Artifacts from fuzzing runs
+artifacts/*
+!artifacts/README.md
+!artifacts/reports/
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.iml
+.vs/
+
+# Rust
+**/*.rs.bk
+
+# Python (for any helper scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Generated programs (keep manually created ones)
+guest/cores/generated/
+guest/cores/gen_*.rs
+guest/cores/*_mut*.rs
+
+# Input corpora (may be large)
+inputs/*.bin
+inputs/large_*.json
+
+# CI artifacts
+ci/results/
+
+# Documentation builds
+docs/_build/
+
