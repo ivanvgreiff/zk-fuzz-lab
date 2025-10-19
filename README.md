@@ -90,6 +90,98 @@ ci/                   # Smoke tests and nightly fuzzing runs
 - **Phase 13** ⏳ - Validation loop (track productive operators, tune based on findings)
 - **Phase 14** ⏳ - Coordination (pairing sessions, reviews)
 
+## Setup (WSL Recommended)
+
+### Prerequisites
+
+SP1 works best on Linux. If you're on Windows, use **WSL (Windows Subsystem for Linux)**.
+
+#### 1. Install WSL (Windows users only)
+```bash
+# In Windows PowerShell (as Administrator)
+wsl --install
+# Restart your computer, then open "Ubuntu" from Start menu
+```
+
+#### 2. Install Rust
+```bash
+# In WSL/Linux terminal
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+# Choose option 1 (default installation)
+
+# Activate Rust in current shell
+source $HOME/.cargo/env
+
+# Verify installation
+cargo --version
+rustc --version
+```
+
+#### 3. Install Build Tools
+```bash
+# Required for compiling Rust dependencies
+sudo apt update
+sudo apt install -y build-essential
+```
+
+#### 4. Install SP1 SDK
+```bash
+# Install sp1up (SP1 installer)
+curl -L https://sp1.succinct.xyz | bash
+
+# Reload your shell configuration
+source ~/.bashrc
+
+# Install SP1 toolchain
+sp1up
+
+# Verify installation
+cargo prove --version
+```
+
+### Clone and Build
+
+```bash
+# Clone the repository (adjust path for WSL)
+cd /mnt/c/Users/YOUR_USERNAME/  # Or wherever you want
+git clone https://github.com/YOUR_USERNAME/zk-fuzz-lab.git
+cd zk-fuzz-lab
+
+# Build all workspace packages (first build takes ~5-10 minutes)
+cargo build --release
+
+# Build the SP1 guest program
+cd adapters/sp1_guest/fib_guest
+cargo prove build
+cd ../../..
+
+# Verify everything works
+make run CORE=guest/cores/fib INPUT=inputs/fib_24.json
+```
+
+Expected output:
+```
+🚀 Starting differential test...
+   Core: guest/cores/fib
+   Input: inputs/fib_24.json
+
+📦 Building SP1 guest...
+   ✅ SP1 guest built
+
+🏃 Running native...
+   ✅ Native completed in 0ms
+
+🏃 Running SP1...
+   ✅ SP1 completed in 22ms
+
+🔍 Comparing results...
+   ✅ PASS - Results match!
+   📊 Timing delta: 22ms
+
+💾 Logging results...
+   ✅ Results logged to artifacts/
+```
+
 ## Quick Start
 
 ```bash
@@ -105,6 +197,42 @@ make build
 # Run tests
 make test
 ```
+
+## Troubleshooting
+
+### "cargo: command not found" in WSL
+Make sure you've activated Rust in your current shell:
+```bash
+source $HOME/.cargo/env
+```
+
+Add to `~/.bashrc` to make it permanent:
+```bash
+echo 'source $HOME/.cargo/env' >> ~/.bashrc
+```
+
+### "linker `cc` not found"
+Install build tools:
+```bash
+sudo apt update
+sudo apt install -y build-essential
+```
+
+### "cargo prove: command not found"
+The SP1 SDK isn't installed. Run:
+```bash
+curl -L https://sp1.succinct.xyz | bash
+source ~/.bashrc
+sp1up
+```
+
+### Builds are very slow on WSL
+This is normal for first builds (SP1 has many dependencies). Subsequent builds will be much faster due to caching. Consider:
+- Keeping the repo on the WSL filesystem (`~/projects/`) instead of `/mnt/c/` for better performance
+- Using `cargo build --release` (slower build, faster execution)
+
+### "current package believes it's in a workspace when it's not"
+The SP1 guest adapter needs to be a standalone workspace. This is already configured in `adapters/sp1_guest/fib_guest/Cargo.toml` with an empty `[workspace]` table.
 
 ## Architecture Notes
 
