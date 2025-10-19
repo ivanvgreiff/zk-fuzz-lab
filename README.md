@@ -2,19 +2,35 @@
 
 A zkVM-agnostic differential fuzzing framework for finding bugs in zero-knowledge virtual machines.
 
-## Current Goal: A1 (Rust-level Differential Fuzzing)
+## Three-Pronged Approach
 
+This framework implements three complementary fuzzing strategies:
+
+### A1: Rust-Level Differential (Current Focus)
 Build a harness that compiles **the same Rust guest program** to:
 1. **Native** (standard Rust compilation)
 2. **Target zkVM** (starting with SP1)
 
 Then run both with **identical deterministic inputs** and **diff** the results to surface divergences.
 
-### What We Compare
-
+**What We Compare:**
 - **Primary**: Commit stream equality (sequence of values committed by the program)
 - **Secondary**: Status (OK | PANIC | TIMEOUT) and execution timing
 - **Tertiary** (later phases): Allocator/ABI hints (pointer addresses, vector lengths)
+
+### A2: RISC-V Level Differential (Phase 10+)
+Compare execution at the **RISC-V instruction level**:
+- Generate/mutate RISC-V programs directly
+- Run through emulator vs zkVM
+- Compare final CPU state (registers, memory, PC)
+- More degrees of freedom than Rust-level
+
+### A3: zkVM-Specific Invariant Testing (Phase 11+)
+Test zkVM-specific properties:
+- Proof/witness mutations (malformed proofs should fail verification)
+- Serialization/deserialization edge cases
+- VK root consistency
+- Public value tampering
 
 ### Design Principles
 
@@ -49,11 +65,30 @@ artifacts/            # Crashes, divergences, repros, logs
 ci/                   # Smoke tests and nightly fuzzing runs
 ```
 
-## Phase Status
+## Implementation Phases
 
-- **Phase 0** ✅ - Repository scaffold created
-- **Phase 1** ✅ - Walking skeleton complete (fibonacci differential test working)
-- **Phase 2+** ⏳ - Pending
+### Completed
+- **Phase 0** ✅ - Bootstrap & repo scaffold
+- **Phase 1** ✅ - Walking skeleton (native+SP1 differential for fibonacci)
+
+### A1: Rust-Level Differential (In Progress)
+- **Phase 2** ⏳ - Observability (panic capture, timeout handling, repro scripts)
+- **Phase 3** ⏳ - Seed programs (I/O echo, arithmetic, structs)
+- **Phase 4** ⏳ - Logging schema (CSV exports, structured artifacts)
+- **Phase 5** ⏳ - Mutators v0 (natural: constants, booleans, branches, input biasing)
+- **Phase 6** ⏳ - RustSmith integration (randomized program generation)
+- **Phase 7** ⏳ - A1 validation (attempt to rediscover 1 SP1 + 1 RISC Zero bug)
+
+### Multi-ZKVM & A2/A3 Preparation
+- **Phase 8** ⏳ - Portability hooks (Runner trait, support for RISC Zero/OpenVM)
+- **Phase 9** ⏳ - Hygiene & comms (public repo redaction, documentation)
+- **Phase 10** ⏳ - A2 scaffolding (RISC-V level differential)
+- **Phase 11** ⏳ - A3 preparation (proof/witness mutation research)
+
+### Infrastructure & Validation
+- **Phase 12** ⏳ - CI/CD (PR smoke tests, nightly fuzzing runs)
+- **Phase 13** ⏳ - Validation loop (track productive operators, tune based on findings)
+- **Phase 14** ⏳ - Coordination (pairing sessions, reviews)
 
 ## Quick Start
 
