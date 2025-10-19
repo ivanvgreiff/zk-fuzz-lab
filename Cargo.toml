@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = [
+    "guest/cores/fib",
+    "runners/native",
+    "runners/sp1",
+    "oracles/rust_eq",
+    "harness",
+]
+
+[workspace.dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+

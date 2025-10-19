@@ -1,10 +1,10 @@
 # Trace Mutators (A3)
 
-**Phase 11+**: ZKVM-specific mutations for soundness testing.
+**Phase 11+**: zkVM-specific mutations for soundness testing.
 
 ## Purpose
 
-Mutate ZKVM-specific artifacts to surface **soundness issues**:
+Mutate zkVM-specific artifacts to surface **soundness issues**:
 - Witness tampering
 - Public value modifications
 - Serialization/deserialization corruption
@@ -12,13 +12,13 @@ Mutate ZKVM-specific artifacts to surface **soundness issues**:
 
 ## Why A3 is Different
 
-A1 and A2 are **ZKVM-agnostic** (compare behaviors).
+A1 and A2 are **zkVM-agnostic** (compare behaviors).
 
-A3 is **ZKVM-specific** (mutate proof artifacts that should cause verification failure).
+A3 is **zkVM-specific** (mutate proof artifacts that should cause verification failure).
 
 ## Research Items (Phase 11)
 
-Per meeting context, investigate:
+To investigate:
 1. **`is_complete` lifecycle**: Witness → Public Value
    - Where does it transition?
    - When can we mutate the public value struct?
@@ -49,7 +49,7 @@ commitments[chip_id] = random_field_element();
 
 ## Expected Outcomes
 
-A3 mutations should **fail verification** if the ZKVM is sound.
+A3 mutations should **fail verification** if the zkVM is sound.
 
 If verification **passes** after mutation → potential soundness bug.
 

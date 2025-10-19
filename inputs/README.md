@@ -4,7 +4,7 @@ Deterministic input corpora for differential testing.
 
 ## Purpose
 
-Store JSON input files that are fed **identically** to both native and ZKVM runners.
+Store JSON input files that are fed **identically** to both native and zkVM runners.
 
 ## Format
 
@@ -36,7 +36,7 @@ Examples:
 - fib_100.json        (medium)
 - io_echo_empty.json  (empty input)
 - io_echo_1kb.json    (1KB of data)
-- io_echo_1mb.json    (1MB of data, for capacity testing)
+- io_echo_1mb.json    (1MB of data, for testing the `ptr + capacity > MAX_MEMORY` bug)
 ```
 
 ## Determinism
@@ -47,7 +47,7 @@ Examples:
 
 ## Capacity Biasing (Phase 5+)
 
-Per the meeting context, capacity scales with **guest-controlled data size**. We bias input sizes to stress capacity:
+With respect to the SP1 allocator overflow bug, the `capacity` variable scales with **guest-controlled data size**. We bias input sizes to stress capacity:
 
 - `io_echo_0.json`: 0 bytes
 - `io_echo_1.json`: 1 byte

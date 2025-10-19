@@ -1,12 +1,12 @@
 # SP1 Runner
 
-Builds and executes guest programs via **SP1 ZKVM**.
+Builds and executes guest programs via **SP1 zkVM**.
 
 ## Purpose
 
 Compile adapters from `adapters/sp1_guest/` and run them through SP1:
 1. Build the SP1 guest program (adapter + core)
-2. Execute with input via `sp1_zkvm::io::read()`
+2. Execute with input via `sp1_zkVM::io::read()`
 3. Extract committed values from execution
 4. Capture status (OK | PANIC | TIMEOUT) and timing
 

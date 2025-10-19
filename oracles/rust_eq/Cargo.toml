@@ -1,0 +1,14 @@
+[package]
+name = "rust-eq-oracle"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+
+[lib]
+name = "rust_eq_oracle"
+path = "src/lib.rs"
+

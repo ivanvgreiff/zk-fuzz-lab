@@ -1,6 +1,6 @@
 # RISC-V Equality Oracle (A2)
 
-**Phase 10+**: Compares RISC-V emulator vs ZKVM execution state.
+**Phase 10+**: Compares RISC-V emulator vs zkVM execution state.
 
 ## Purpose
 
@@ -18,7 +18,7 @@ pub struct RiscVState {
     pub memory: Vec<(u32, u8)>, // (addr, byte) pairs
 }
 
-pub fn compare(emulator: &RiscVState, zkvm: &RiscVState) -> Diff {
+pub fn compare(emulator: &RiscVState, zkVM: &RiscVState) -> Diff {
     // Compare registers
     // Compare PC
     // Compare memory (may need approximate comparison for allocator differences)
@@ -46,5 +46,5 @@ Later phases may compare intermediate states (cycle-by-cycle), not just final st
 
 - **rust_eq** (A1): High-level Rust behavior
 - **riscv_eq** (A2): Low-level instruction execution
-- Both are ZKVM-agnostic (compare against reference implementation)
+- Both are zkVM-agnostic (compare against reference implementation)
 

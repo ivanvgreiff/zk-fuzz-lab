@@ -5,7 +5,7 @@ Storage for crashes, divergences, repros, and logs from fuzzing campaigns.
 ## Purpose
 
 Persistent record of all fuzzing runs, with special emphasis on:
-- **Divergences**: Native vs ZKVM disagreements
+- **Divergences**: Native vs zkVM disagreements
 - **Panics**: Crashes in either runner
 - **Timeouts**: Hanging executions
 - **Repros**: Scripts to reproduce any finding
@@ -40,13 +40,13 @@ run_id,seed_path,target,compiler_flags,input_id,rng_seed,status,exit_code,elapse
 ### Columns
 - `run_id`: Unique identifier (timestamp + seed name)
 - `seed_path`: Path to the core/guest program
-- `target`: ZKVM target (sp1, risc0, openvm, etc.)
+- `target`: zkVM target (sp1, risc0, openvm, etc.)
 - `compiler_flags`: Rust compiler flags used
 - `input_id`: Input file basename
 - `rng_seed`: RNG seed if randomization was used (null if deterministic)
 - `status`: PASS | DIVERGE | PANIC | TIMEOUT
 - `exit_code`: Native exit code (if applicable)
-- `elapsed_ms`: Total execution time (native + zkvm)
+- `elapsed_ms`: Total execution time (native + zkVM)
 - `diff_cause`: Reason for divergence (null if PASS)
 - `repro_cmd`: Full command to reproduce
 

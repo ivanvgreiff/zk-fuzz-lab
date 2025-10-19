@@ -10,15 +10,15 @@ Generate RISC-V assembly programs to explore more degrees of freedom than Rust-l
 
 - Generate RV32I/RV32IM instruction sequences
 - Build matching input data
-- Compare emulator execution vs ZKVM execution
+- Compare emulator execution vs zkVM execution
 - Use `oracles/riscv_eq` for state comparison
 
 ## Why A2 After A1?
 
-Per meeting context:
-- A1 gives fast feedback across multiple ZKVMs
+- A1 gives fast feedback across multiple zkVMs
 - A2 provides deeper control over instruction-level behavior
 - Some bugs A1 finds, A2 might not (and vice versa)
+- Or, all bugs A1 finds should be findable via A2
 - The relationship is still being understood
 
 ## Phase Schedule

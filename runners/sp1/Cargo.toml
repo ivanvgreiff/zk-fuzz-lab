@@ -1,0 +1,17 @@
+[package]
+name = "sp1-runner"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "sp1-runner"
+path = "src/main.rs"
+
+[dependencies]
+rust-eq-oracle = { path = "../../oracles/rust_eq" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+clap = { version = "4.5", features = ["derive"] }
+sp1-sdk = "5.2.2"
+

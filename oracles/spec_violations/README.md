@@ -1,10 +1,10 @@
 # Spec Violations Oracle (A3)
 
-**Phase 11+**: ZKVM-specific invariant checks for soundness testing.
+**Phase 11+**: zkVM-specific invariant checks for soundness testing.
 
 ## Purpose
 
-Check **"should never pass"** invariants specific to each ZKVM:
+Check **"should never pass"** invariants specific to each zkVM:
 - Proof verification should fail after certain mutations
 - Public values should satisfy constraints
 - Commitments should be consistent with execution
@@ -33,9 +33,9 @@ assert!(ptr + capacity <= MAX_MEMORY); // Should trigger error
 // Verification should catch this, but doesn't (if bug present)
 ```
 
-## ZKVM-Specific
+## zkVM-Specific
 
-Each ZKVM may have different invariants:
+Each zkVM may have different invariants:
 - **SP1**: Specific chip ordering, commitment structure
 - **RISC Zero**: Receipt structure, journal constraints
 - **OpenVM**: Circuit-specific checks
@@ -43,7 +43,7 @@ Each ZKVM may have different invariants:
 ## Phase Schedule
 
 - **Phase 0-10**: Not implemented (stub directory)
-- **Phase 11**: Research + document invariants per ZKVM
+- **Phase 11**: Research + document invariants per zkVM
 - **Phase 12+**: Implementation (SP1 first)
 
 ## Output

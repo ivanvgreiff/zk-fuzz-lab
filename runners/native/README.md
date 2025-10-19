@@ -4,7 +4,7 @@ Builds and executes guest cores as **native Rust binaries**.
 
 ## Purpose
 
-Run the plain Rust core logic from `guest/cores/` directly, without any ZKVM:
+Run the plain Rust core logic from `guest/cores/` directly, without any zkVM:
 1. Read input from JSON file
 2. Deserialize into `Input` type
 3. Call `core::run(input)`

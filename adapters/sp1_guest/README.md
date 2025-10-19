@@ -4,10 +4,10 @@ This directory contains **one-way adapters** that wrap plain Rust cores into SP1
 
 ## Purpose
 
-Transform ZKVM-agnostic cores from `guest/cores/` into valid SP1 guest programs with:
+Transform zkVM-agnostic cores from `guest/cores/` into valid SP1 guest programs with:
 - `#![no_main]`
-- `sp1_zkvm::entrypoint!(main)`
-- `sp1_zkvm::io::{read, commit}` for I/O
+- `sp1_zkVM::entrypoint!(main)`
+- `sp1_zkVM::io::{read, commit}` for I/O
 
 ## Example Adapter
 
@@ -19,13 +19,13 @@ pub fn run(input: FibInput) -> FibOutput
 The adapter `adapters/sp1_guest/fib_guest.rs` would be:
 ```rust
 #![no_main]
-sp1_zkvm::entrypoint!(main);
+sp1_zkVM::entrypoint!(main);
 
 use fib_core::{FibInput, run};
 
 pub fn main() {
     // 1. Read input from SP1 I/O
-    let input_bytes = sp1_zkvm::io::read::<Vec<u8>>();
+    let input_bytes = sp1_zkVM::io::read::<Vec<u8>>();
     let input: FibInput = serde_json::from_slice(&input_bytes)
         .expect("Failed to parse input");
     
@@ -33,9 +33,9 @@ pub fn main() {
     let output = run(input);
     
     // 3. Commit outputs in order
-    sp1_zkvm::io::commit(&output.n);
-    sp1_zkvm::io::commit(&output.a);
-    sp1_zkvm::io::commit(&output.b);
+    sp1_zkVM::io::commit(&output.n);
+    sp1_zkVM::io::commit(&output.a);
+    sp1_zkVM::io::commit(&output.b);
 }
 ```
 

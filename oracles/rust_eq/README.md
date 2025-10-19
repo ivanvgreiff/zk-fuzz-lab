@@ -1,10 +1,10 @@
 # Rust Equality Oracle (A1)
 
-Compares **native** vs **ZKVM** execution results for Rust-level differential fuzzing.
+Compares **native** vs **zkVM** execution results for Rust-level differential fuzzing.
 
 ## Purpose
 
-Given two `RunResult` structs (one from native runner, one from SP1/ZKVM runner), determine if they are equivalent or diverged.
+Given two `RunResult` structs (one from native runner, one from SP1/zkVM runner), determine if they are equivalent or diverged.
 
 ## Comparison Logic
 
@@ -34,7 +34,7 @@ pub struct Diff {
 
 3. **Timing delta** (optional): `|native.elapsed_ms - sp1.elapsed_ms|`
    - Recorded for analysis
-   - Not a failure condition (ZKVMs are slower)
+   - Not a failure condition (zkVMs are slower)
    - Large deltas or TIMEOUT on one side are strong signals
 
 ## Output
@@ -57,6 +57,6 @@ pub struct Diff {
 ## Relation to Other Oracles
 
 - **rust_eq** (A1): Compares Rust-level behavior (this oracle)
-- **riscv_eq** (A2): Compares RISC-V state (emulator vs ZKVM)
-- **spec_violations** (A3): Checks ZKVM-specific invariants
+- **riscv_eq** (A2): Compares RISC-V state (emulator vs zkVM)
+- **spec_violations** (A3): Checks zkVM-specific invariants
 

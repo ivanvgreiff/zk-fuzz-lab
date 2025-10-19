@@ -4,9 +4,9 @@ This directory contains **plain Rust** implementations of guest programs.
 
 ## Design Principle
 
-Guest cores are **ZKVM-agnostic** business logic:
+Guest cores are **zkVM-agnostic** business logic:
 - No `#![no_main]`
-- No ZKVM-specific APIs (no `sp1_zkvm::`, `risc0_zkvm::`, etc.)
+- No zkVM-specific APIs (no `sp1_zkVM::`, `risc0_zkVM::`, etc.)
 - Simple function signature: `fn run(input: Input) -> Output`
 
 ## Example Structure
@@ -49,12 +49,12 @@ pub fn run(input: FibInput) -> FibOutput {
 ## How This Runs
 
 1. **Native runner** calls `run()` directly with deserialized input
-2. **ZKVM adapters** wrap this logic:
-   - Read input via `zkvm::io::read()`
+2. **zkVM adapters** wrap this logic:
+   - Read input via `zkVM::io::read()`
    - Call `run(input)`
-   - Commit output fields via `zkvm::io::commit()`
+   - Commit output fields via `zkVM::io::commit()`
 
-This keeps the business logic portable across all ZKVMs.
+This keeps the business logic portable across all zkVMs.
 
 ## Phase Schedule
 

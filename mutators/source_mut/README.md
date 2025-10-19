@@ -8,7 +8,7 @@ Apply "natural" transformations to Rust source code or RISC-V assembly to genera
 
 ## Philosophy
 
-**Natural-first** per meeting guidance:
+**Natural-first** guidance:
 - Prioritize mutations that could plausibly occur in real code
 - Avoid overly synthetic transformations initially
 - Instruction reordering is **not** a first-choice operator
@@ -31,7 +31,6 @@ Apply "natural" transformations to Rust source code or RISC-V assembly to genera
 ### Input Biasing (Phase 5)
 - Vary `Vec<u8>` lengths to stress **capacity**:
   - `{0, 1, 2, 1024, 1MB, MAX_SIZE}`
-- Per meeting: capacity scales with **guest-controlled data size**
 
 ## Configuration
 

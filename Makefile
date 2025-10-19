@@ -1,21 +1,26 @@
 # zk-fuzz-lab Makefile
 #
 # Phase 0: Basic smoke test to verify scaffold
-# Later phases will add more targets
+# Phase 1: Walking skeleton for differential testing
 
-.PHONY: smoke help clean
+.PHONY: smoke help clean run build test
 
 # Default target
 help:
 	@echo "zk-fuzz-lab - ZKVM Differential Fuzzing Framework"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make smoke    - Verify repository scaffold (Phase 0)"
-	@echo "  make help     - Show this help message"
-	@echo "  make clean    - Remove artifacts and build outputs"
+	@echo "  make smoke          - Verify repository scaffold (Phase 0)"
+	@echo "  make build          - Build all workspace members"
+	@echo "  make test           - Run all tests"
+	@echo "  make run CORE=<core> INPUT=<input> - Run differential test"
+	@echo "  make clean          - Remove artifacts and build outputs"
+	@echo "  make help           - Show this help message"
 	@echo ""
-	@echo "Phase 1+ targets (coming soon):"
-	@echo "  make run A=<guest>  - Run differential test on a guest program"
+	@echo "Example:"
+	@echo "  make run CORE=guest/cores/fib INPUT=inputs/fib_24.json"
+	@echo ""
+	@echo "Phase 2+ targets (coming soon):"
 	@echo "  make batch          - Run all seed programs"
 	@echo "  make fuzz           - Start fuzzing campaign"
 
@@ -40,6 +45,29 @@ smoke:
 	@echo "✅ All directories present"
 	@echo ""
 	@echo "✨ Skeleton OK"
+
+# Phase 1: Build all workspace members
+build:
+	@echo "🔨 Building workspace..."
+	@cargo build --release
+	@echo "✅ Build complete"
+
+# Phase 1: Run all tests
+test:
+	@echo "🧪 Running tests..."
+	@cargo test
+	@echo "✅ Tests complete"
+
+# Phase 1: Run differential test
+# Usage: make run CORE=guest/cores/fib INPUT=inputs/fib_24.json
+run:
+ifndef CORE
+	$(error CORE is not set. Usage: make run CORE=guest/cores/fib INPUT=inputs/fib_24.json)
+endif
+ifndef INPUT
+	$(error INPUT is not set. Usage: make run CORE=guest/cores/fib INPUT=inputs/fib_24.json)
+endif
+	@cargo run --release --bin harness -- run --core $(CORE) --input $(INPUT)
 
 # Clean up generated artifacts
 clean:

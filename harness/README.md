@@ -6,7 +6,7 @@ Orchestrates differential testing runs: inputs → runners → oracles → artif
 
 The harness is the main entry point that:
 1. Loads input from `inputs/` (JSON)
-2. Invokes both **native** and **ZKVM** runners
+2. Invokes both **native** and **zkVM** runners
 3. Calls the appropriate oracle (e.g., `rust_eq`) to diff results
 4. Logs outcomes to `artifacts/`
 5. Generates repro scripts for divergences
@@ -24,7 +24,6 @@ The harness is the main entry point that:
      │
      └──→ oracles/rust_eq/
            compare(RunResult₁, RunResult₂) → Diff
-           
            ├─→ artifacts/run_<id>.json
            └─→ artifacts/repro_<id>.sh (if diverged)
 ```

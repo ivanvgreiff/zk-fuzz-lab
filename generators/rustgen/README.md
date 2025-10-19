@@ -42,6 +42,5 @@ rustgen batch --count 100 --output-dir guest/cores/generated/
 
 ## Notes
 
-- If RustSmith has issues, contact **Ali** or **Shel** (mentioned in meeting)
 - LLMs can help craft valid RustSmith configs
 
