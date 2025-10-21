@@ -2,6 +2,8 @@
 resolver = "2"
 members = [
     "guest/cores/fib",
+    "guest/cores/panic_test",
+    "guest/cores/timeout_test",
     "runners/native",
     "runners/sp1",
     "oracles/rust_eq",

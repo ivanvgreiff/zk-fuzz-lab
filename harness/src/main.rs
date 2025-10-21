@@ -71,9 +71,11 @@ fn run_differential_test(core_path: &PathBuf, input_path: &PathBuf, skip_build: 
         .context("Non-UTF8 core name")?;
     
     let guest_path = PathBuf::from(format!("adapters/sp1_guest/{}_guest", core_name));
+    // ELF filename uses hyphens instead of underscores
+    let elf_name = core_name.replace("_", "-");
     let elf_path = guest_path
         .join("target/elf-compilation/riscv32im-succinct-zkvm-elf/release")
-        .join(format!("{}-guest", core_name));
+        .join(format!("{}-guest", elf_name));
 
     // Step 1: Build SP1 guest (unless skip_build is set)
     if !skip_build {
@@ -86,12 +88,12 @@ fn run_differential_test(core_path: &PathBuf, input_path: &PathBuf, skip_build: 
 
     // Step 2: Run native runner
     println!("🏃 Running native...");
-    let native_result = run_native_runner(input_path)?;
+    let native_result = run_native_runner(core_name, input_path)?;
     println!("   ✅ Native completed in {}ms\n", native_result.elapsed_ms);
 
     // Step 3: Run SP1 runner
     println!("🏃 Running SP1...");
-    let sp1_result = run_sp1_runner(&elf_path, input_path)?;
+    let sp1_result = run_sp1_runner(&elf_path, input_path, core_name)?;
     println!("   ✅ SP1 completed in {}ms\n", sp1_result.elapsed_ms);
 
     // Step 4: Compare results
@@ -133,9 +135,10 @@ fn build_sp1_guest(guest_path: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-fn run_native_runner(input_path: &PathBuf) -> Result<RunResult> {
+fn run_native_runner(core_name: &str, input_path: &PathBuf) -> Result<RunResult> {
     let output = Command::new("cargo")
         .args(["run", "--release", "--bin", "native-runner", "--"])
+        .args(["--core", core_name])
         .args(["--input", input_path.to_str().unwrap()])
         .output()
         .context("Failed to run native-runner")?;
@@ -153,11 +156,29 @@ fn run_native_runner(input_path: &PathBuf) -> Result<RunResult> {
     Ok(result)
 }
 
-fn run_sp1_runner(elf_path: &PathBuf, input_path: &PathBuf) -> Result<RunResult> {
-    let output = Command::new("cargo")
-        .args(["run", "--release", "--bin", "sp1-runner", "--"])
+fn run_sp1_runner(elf_path: &PathBuf, input_path: &PathBuf, core_name: &str) -> Result<RunResult> {
+    // Determine number of commits based on core
+    let num_commits = match core_name {
+        "fib" => 3,
+        "panic_test" => 2,
+        "timeout_test" => 1,
+        _ => {
+            // For unknown cores, don't specify (will try to read until exhausted)
+            0
+        }
+    };
+
+    let mut cmd = Command::new("cargo");
+    cmd.args(["run", "--release", "--bin", "sp1-runner", "--"])
         .args(["--elf", elf_path.to_str().unwrap()])
-        .args(["--input", input_path.to_str().unwrap()])
+        .args(["--input", input_path.to_str().unwrap()]);
+
+    // Add num-commits if known
+    if num_commits > 0 {
+        cmd.args(["--num-commits", &num_commits.to_string()]);
+    }
+
+    let output = cmd
         .output()
         .context("Failed to run sp1-runner")?;
 
@@ -202,17 +223,129 @@ fn log_results(
         timestamp: timestamp.to_rfc3339(),
         core_path: core_path.display().to_string(),
         input_path: input_path.display().to_string(),
-        native_result,
-        sp1_result,
-        diff,
+        native_result: native_result.clone(),
+        sp1_result: sp1_result.clone(),
+        diff: diff.clone(),
     };
 
     // Write detailed JSON log
     let log_path = PathBuf::from("artifacts").join(format!("{}.json", run_id));
     let log_json = serde_json::to_string_pretty(&log)?;
-    fs::write(&log_path, log_json)?;
+    fs::write(&log_path, &log_json)?;
 
     println!("   📄 Detailed log: {}", log_path.display());
+
+    // If there's a divergence, create a repro folder
+    if !diff.equal {
+        let repro_dir = PathBuf::from("artifacts").join(&run_id);
+        fs::create_dir_all(&repro_dir)?;
+
+        // Generate repro script
+        let repro_script = generate_repro_script(core_path, input_path);
+        let repro_path = repro_dir.join("repro.sh");
+        fs::write(&repro_path, repro_script)?;
+
+        // Make script executable (Unix only)
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            let mut perms = fs::metadata(&repro_path)?.permissions();
+            perms.set_mode(0o755);
+            fs::set_permissions(&repro_path, perms)?;
+        }
+
+        // Copy input file to repro folder
+        let input_copy = repro_dir.join("input.json");
+        fs::copy(input_path, &input_copy)?;
+
+        // Write detailed log to repro folder as well
+        let log_copy = repro_dir.join("run_log.json");
+        fs::write(&log_copy, log_json)?;
+
+        println!("   🔧 Repro folder: {}", repro_dir.display());
+    }
+
+    // Append to CSV summary
+    append_to_csv_summary(&run_id, core_path, input_path, &native_result, &sp1_result, &diff)?;
+
+    Ok(())
+}
+
+/// Generate a repro script for the given test case
+fn generate_repro_script(core_path: &PathBuf, input_path: &PathBuf) -> String {
+    format!(
+        r#"#!/usr/bin/env bash
+# Repro script generated by zk-fuzz-lab harness
+# Run this script from the repository root
+
+set -e
+
+echo "🔁 Reproducing differential test..."
+echo "   Core: {core}"
+echo "   Input: {input}"
+echo ""
+
+# Run the differential test
+make run CORE={core} INPUT={input}
+"#,
+        core = core_path.display(),
+        input = input_path.display(),
+    )
+}
+
+/// Append run results to CSV summary
+fn append_to_csv_summary(
+    run_id: &str,
+    core_path: &PathBuf,
+    input_path: &PathBuf,
+    native_result: &RunResult,
+    sp1_result: &RunResult,
+    diff: &rust_eq_oracle::Diff,
+) -> Result<()> {
+    let csv_path = PathBuf::from("artifacts/summary.csv");
+    
+    // Check if file exists to determine if we need to write header
+    let needs_header = !csv_path.exists();
+
+    // Open file in append mode
+    let file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open(&csv_path)?;
+
+    let mut writer = csv::Writer::from_writer(file);
+
+    // Write header if this is a new file
+    if needs_header {
+        writer.write_record(&[
+            "run_id",
+            "core",
+            "input",
+            "native_status",
+            "sp1_status",
+            "equal",
+            "reason",
+            "elapsed_native_ms",
+            "elapsed_sp1_ms",
+            "timing_delta_ms",
+        ])?;
+    }
+
+    // Write data row
+    writer.write_record(&[
+        run_id,
+        &core_path.file_name().unwrap().to_str().unwrap(),
+        &input_path.display().to_string(),
+        &format!("{:?}", native_result.status),
+        &format!("{:?}", sp1_result.status),
+        &diff.equal.to_string(),
+        &diff.reason.clone().unwrap_or_else(|| "".to_string()),
+        &native_result.elapsed_ms.to_string(),
+        &sp1_result.elapsed_ms.to_string(),
+        &diff.timing_delta_ms.map(|d| d.to_string()).unwrap_or_else(|| "".to_string()),
+    ])?;
+
+    writer.flush()?;
 
     Ok(())
 }

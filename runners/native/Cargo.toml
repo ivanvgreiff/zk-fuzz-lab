@@ -9,6 +9,8 @@ path = "src/main.rs"
 
 [dependencies]
 fib-core = { path = "../../guest/cores/fib" }
+panic-test-core = { path = "../../guest/cores/panic_test" }
+timeout-test-core = { path = "../../guest/cores/timeout_test" }
 rust-eq-oracle = { path = "../../oracles/rust_eq" }
 serde = { workspace = true }
 serde_json = { workspace = true }

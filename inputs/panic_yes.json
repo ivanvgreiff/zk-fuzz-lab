@@ -1,0 +1,5 @@
+{
+  "should_panic": true,
+  "panic_msg": "Test panic message for observability"
+}
+

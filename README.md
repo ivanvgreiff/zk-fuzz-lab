@@ -70,11 +70,11 @@ ci/                   # Smoke tests and nightly fuzzing runs
 ### Completed
 - **Phase 0** ✅ - Bootstrap & repo scaffold
 - **Phase 1** ✅ - Walking skeleton (native+SP1 differential for fibonacci)
+- **Phase 2** ✅ - Observability (panic capture, timeout handling, repro scripts, CSV logging)
 
 ### A1: Rust-Level Differential (In Progress)
-- **Phase 2** ⏳ - Observability (panic capture, timeout handling, repro scripts)
 - **Phase 3** ⏳ - Seed programs (I/O echo, arithmetic, structs)
-- **Phase 4** ⏳ - Logging schema (CSV exports, structured artifacts)
+- **Phase 4** ⏳ - Enhanced logging schema (additional structured artifacts)
 - **Phase 5** ⏳ - Mutators v0 (natural: constants, booleans, branches, input biasing)
 - **Phase 6** ⏳ - RustSmith integration (randomized program generation)
 - **Phase 7** ⏳ - A1 validation (attempt to rediscover 1 SP1 + 1 RISC Zero bug)
@@ -253,10 +253,3 @@ Once A1 is stable (Phase 7), we will attempt to re-detect:
 - 1 known RISC Zero bug
 
 If they appear **immediately**, we may have bias. If they appear eventually or not at all, we document why and adjust.
-
-## References
-
-- **Implementation Plan**: `implementation_plan.md`
-- **Meeting Context**: `implementation_plan_context.md`
-- **Architecture Decisions**: `context_from_beginning.md`
-
