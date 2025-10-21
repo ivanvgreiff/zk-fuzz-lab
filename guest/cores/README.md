@@ -56,9 +56,23 @@ pub fn run(input: FibInput) -> FibOutput {
 
 This keeps the business logic portable across all zkVMs.
 
+## Available Cores
+
+### Phase 1
+- **fib** - Fibonacci sequence computation (modular arithmetic to prevent overflow)
+
+### Phase 2
+- **panic_test** - Configurable panic testing (can be set to panic or succeed)
+- **timeout_test** - Configurable timeout testing (finite or infinite loops)
+
+### Phase 3+ (Planned)
+- I/O echo, arithmetic boundary, simple struct seeds
+- RustSmith auto-generated cores (Phase 6+)
+
 ## Phase Schedule
 
 - **Phase 1**: Add fibonacci core
+- **Phase 2**: Add panic_test and timeout_test cores for error handling validation
 - **Phase 3**: Add I/O echo, arithmetic boundary, simple struct seeds
 - **Phase 6+**: Auto-generate cores via RustSmith
 

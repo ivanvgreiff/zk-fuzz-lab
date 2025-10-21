@@ -55,9 +55,26 @@ With respect to the SP1 allocator overflow bug, the `capacity` variable scales w
 - `io_echo_1mb.json`: 1 MB
 - `io_echo_max.json`: Maximum safe size
 
+## Available Inputs
+
+### Phase 1
+- `fib_24.json` - Fibonacci with n=24
+
+### Phase 2
+- `panic_no.json` - Panic test configured to succeed
+- `panic_yes.json` - Panic test configured to panic with custom message
+- `timeout_finite.json` - Timeout test with 1M iterations (completes quickly)
+- `timeout_infinite.json` - Timeout test with infinite loop (triggers timeout)
+
+### Phase 3+ (Planned)
+- I/O echo inputs (various sizes)
+- Arithmetic boundary inputs
+- Struct seed inputs
+
 ## Phase Schedule
 
 - **Phase 1**: Manual inputs for fibonacci
+- **Phase 2**: Inputs for panic and timeout testing
 - **Phase 3**: Inputs for I/O echo, arithmetic, struct seeds
 - **Phase 5**: Size-biased inputs for capacity exploration
 - **Phase 6**: Auto-generated inputs from RustSmith

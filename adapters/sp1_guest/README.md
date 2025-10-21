@@ -46,8 +46,37 @@ We don't need a "reverse adapter" (SP1 → native) because:
 - Native runner calls the core directly
 - Only SP1 needs the wrapper layer
 
+## Available Adapters
+
+### Phase 1
+- **fib_guest** - Wraps `fib-core` for SP1 execution
+
+### Phase 2
+- **panic_test_guest** - Wraps `panic-test-core` for SP1 execution
+- **timeout_test_guest** - Wraps `timeout-test-core` for SP1 execution
+
+### Phase 3+ (Planned)
+- I/O echo guest
+- Arithmetic boundary guest
+- Consider templating/codegen for common patterns
+
+## Build Process
+
+Each adapter is a **standalone Cargo workspace** to allow independent RISC-V compilation:
+
+```bash
+cd adapters/sp1_guest/fib_guest
+cargo prove build
+```
+
+This generates an ELF binary at:
+```
+target/elf-compilation/riscv32im-succinct-zkvm-elf/release/fib-guest
+```
+
 ## Phase Schedule
 
 - **Phase 1**: Manual adapter for fibonacci
+- **Phase 2**: Manual adapters for panic and timeout testing
 - **Phase 3+**: Consider templating/codegen for common patterns
 
