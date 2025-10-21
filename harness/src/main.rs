@@ -162,6 +162,9 @@ fn run_sp1_runner(elf_path: &PathBuf, input_path: &PathBuf, core_name: &str) -> 
         "fib" => 3,
         "panic_test" => 2,
         "timeout_test" => 1,
+        "io_echo" => 3,          // length, first_byte, last_byte
+        "arithmetic" => 2,       // result, overflowed
+        "simple_struct" => 4,    // field1_echo, field2_len, field2_chars, field3_echo
         _ => {
             // For unknown cores, don't specify (will try to read until exhausted)
             0

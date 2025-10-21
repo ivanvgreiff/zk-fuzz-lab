@@ -71,9 +71,9 @@ ci/                   # Smoke tests and nightly fuzzing runs
 - **Phase 0** ✅ - Bootstrap & repo scaffold
 - **Phase 1** ✅ - Walking skeleton (native+SP1 differential for fibonacci)
 - **Phase 2** ✅ - Observability (panic capture, timeout handling, repro scripts, CSV logging)
+- **Phase 3** ✅ - Seed programs (I/O echo, arithmetic, simple struct cores + comprehensive inputs)
 
 ### A1: Rust-Level Differential (In Progress)
-- **Phase 3** ⏳ - Seed programs (I/O echo, arithmetic, structs)
 - **Phase 4** ⏳ - Enhanced logging schema (additional structured artifacts)
 - **Phase 5** ⏳ - Mutators v0 (natural: constants, booleans, branches, input biasing)
 - **Phase 6** ⏳ - RustSmith integration (randomized program generation)

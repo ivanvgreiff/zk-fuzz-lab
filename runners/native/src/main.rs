@@ -158,6 +158,46 @@ fn run_core_dispatch(core_name: &str, input_bytes: &[u8]) -> Result<Vec<serde_js
                 serde_json::to_value(&output.completed)?,
             ])
         }
+        "io_echo" => {
+            let input: io_echo_core::IoEchoInput = serde_json::from_slice(input_bytes)?;
+            let output = io_echo_core::run(input);
+            // Encode Option<u8> as u32: 0 for None, 1+value for Some
+            let first_byte_u32 = match output.first_byte {
+                None => 0u32,
+                Some(byte) => 1u32 + byte as u32,
+            };
+            let last_byte_u32 = match output.last_byte {
+                None => 0u32,
+                Some(byte) => 1u32 + byte as u32,
+            };
+            Ok(vec![
+                serde_json::to_value(&output.length)?,
+                serde_json::to_value(&first_byte_u32)?,
+                serde_json::to_value(&last_byte_u32)?,
+            ])
+        }
+        "arithmetic" => {
+            let input: arithmetic_core::ArithmeticInput = serde_json::from_slice(input_bytes)?;
+            let output = arithmetic_core::run(input);
+            // Encode bool as u32: 0 for false, 1 for true
+            let overflowed_u32 = if output.overflowed { 1u32 } else { 0u32 };
+            Ok(vec![
+                serde_json::to_value(&output.result)?,
+                serde_json::to_value(&overflowed_u32)?,
+            ])
+        }
+        "simple_struct" => {
+            let input: simple_struct_core::SimpleStructInput = serde_json::from_slice(input_bytes)?;
+            let output = simple_struct_core::run(input);
+            // Encode bool as u32: 0 for false, 1 for true
+            let field3_u32 = if output.field3_echo { 1u32 } else { 0u32 };
+            Ok(vec![
+                serde_json::to_value(&output.field1_echo)?,
+                serde_json::to_value(&output.field2_len)?,
+                serde_json::to_value(&output.field2_chars)?,
+                serde_json::to_value(&field3_u32)?,
+            ])
+        }
         _ => anyhow::bail!("Unknown core: {}", core_name),
     }
 }

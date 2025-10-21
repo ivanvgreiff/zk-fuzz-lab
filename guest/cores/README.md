@@ -65,9 +65,13 @@ This keeps the business logic portable across all zkVMs.
 - **panic_test** - Configurable panic testing (can be set to panic or succeed)
 - **timeout_test** - Configurable timeout testing (finite or infinite loops)
 
-### Phase 3+ (Planned)
-- I/O echo, arithmetic boundary, simple struct seeds
-- RustSmith auto-generated cores (Phase 6+)
+### Phase 3
+- **io_echo** - Memory allocation and capacity testing (reads Vec<u8>, commits length + first/last bytes)
+- **arithmetic** - Integer overflow/underflow testing (add, sub, mul, div with boundary values)
+- **simple_struct** - Struct serialization and ABI testing (u32, String, bool fields)
+
+### Phase 6+ (Planned)
+- RustSmith auto-generated cores
 
 ## Phase Schedule
 

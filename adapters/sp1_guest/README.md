@@ -55,9 +55,12 @@ We don't need a "reverse adapter" (SP1 → native) because:
 - **panic_test_guest** - Wraps `panic-test-core` for SP1 execution
 - **timeout_test_guest** - Wraps `timeout-test-core` for SP1 execution
 
-### Phase 3+ (Planned)
-- I/O echo guest
-- Arithmetic boundary guest
+### Phase 3
+- **io_echo_guest** - Wraps `io-echo-core` for SP1 execution
+- **arithmetic_guest** - Wraps `arithmetic-core` for SP1 execution
+- **simple_struct_guest** - Wraps `simple-struct-core` for SP1 execution
+
+### Phase 6+ (Planned)
 - Consider templating/codegen for common patterns
 
 ## Build Process
@@ -78,5 +81,6 @@ target/elf-compilation/riscv32im-succinct-zkvm-elf/release/fib-guest
 
 - **Phase 1**: Manual adapter for fibonacci
 - **Phase 2**: Manual adapters for panic and timeout testing
-- **Phase 3+**: Consider templating/codegen for common patterns
+- **Phase 3**: Manual adapters for I/O echo, arithmetic, and simple struct
+- **Phase 6+**: Consider templating/codegen for common patterns
 

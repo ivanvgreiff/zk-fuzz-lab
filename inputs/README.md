@@ -66,10 +66,27 @@ With respect to the SP1 allocator overflow bug, the `capacity` variable scales w
 - `timeout_finite.json` - Timeout test with 1M iterations (completes quickly)
 - `timeout_infinite.json` - Timeout test with infinite loop (triggers timeout)
 
-### Phase 3+ (Planned)
-- I/O echo inputs (various sizes)
-- Arithmetic boundary inputs
-- Struct seed inputs
+### Phase 3
+**I/O Echo (3 inputs)**
+- `io_echo_empty.json` - Empty data (0 bytes)
+- `io_echo_1kb.json` - 1KB of data (1024 bytes)
+- `io_echo_100kb.json` - Small data sample (10 bytes, placeholder for larger tests)
+
+**Arithmetic (8 inputs)**
+- `arithmetic_add_normal.json` - Normal addition (10 + 20)
+- `arithmetic_add_overflow.json` - Overflow addition (u32::MAX + 1)
+- `arithmetic_sub_normal.json` - Normal subtraction (20 - 10)
+- `arithmetic_sub_underflow.json` - Underflow subtraction (0 - 1)
+- `arithmetic_mul_normal.json` - Normal multiplication (10 * 20)
+- `arithmetic_mul_overflow.json` - Overflow multiplication (65536 * 65536)
+- `arithmetic_div_normal.json` - Normal division (20 / 10)
+- `arithmetic_div_by_zero.json` - Division by zero (triggers panic)
+
+**Simple Struct (4 inputs)**
+- `simple_struct_normal.json` - Normal struct (42, "hello", true)
+- `simple_struct_empty.json` - Empty string field (0, "", false)
+- `simple_struct_unicode.json` - Unicode string (1, "🦀 Rust", true)
+- `simple_struct_long.json` - Long string (99, "a"*1000, false)
 
 ## Phase Schedule
 

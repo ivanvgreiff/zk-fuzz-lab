@@ -69,6 +69,28 @@ ifndef INPUT
 endif
 	@cargo run --release --bin harness -- run --core $(CORE) --input $(INPUT)
 
+# Phase 3: Run batch tests on all seed cores
+# Usage: make batch
+batch:
+	@echo "🔁 Running batch tests on all seed cores..."
+	@echo ""
+	@make run CORE=guest/cores/fib INPUT=inputs/fib_24.json
+	@echo ""
+	@make run CORE=guest/cores/io_echo INPUT=inputs/io_echo_empty.json
+	@echo ""
+	@make run CORE=guest/cores/io_echo INPUT=inputs/io_echo_1kb.json
+	@echo ""
+	@make run CORE=guest/cores/arithmetic INPUT=inputs/arithmetic_add_normal.json
+	@echo ""
+	@make run CORE=guest/cores/arithmetic INPUT=inputs/arithmetic_add_overflow.json
+	@echo ""
+	@make run CORE=guest/cores/arithmetic INPUT=inputs/arithmetic_div_by_zero.json
+	@echo ""
+	@make run CORE=guest/cores/simple_struct INPUT=inputs/simple_struct_normal.json
+	@echo ""
+	@echo "✅ Batch tests complete!"
+	@echo "📊 Summary available in artifacts/summary.csv"
+
 # Clean up generated artifacts
 clean:
 	@echo "🧹 Cleaning artifacts..."
