@@ -69,8 +69,8 @@ With respect to the SP1 allocator overflow bug, the `capacity` variable scales w
 ### Phase 3
 **I/O Echo (3 inputs)**
 - `io_echo_empty.json` - Empty data (0 bytes)
-- `io_echo_1kb.json` - 1KB of data (1024 bytes)
-- `io_echo_100kb.json` - Small data sample (10 bytes, placeholder for larger tests)
+- `io_echo_small.json` - Small data sample (10 bytes, 0-9)
+- `io_echo_1kb.json` - 1KB of data (1024 bytes, 0-255 pattern repeated 4x)
 
 **Arithmetic (8 inputs)**
 - `arithmetic_add_normal.json` - Normal addition (10 + 20)

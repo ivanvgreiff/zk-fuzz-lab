@@ -32,15 +32,18 @@ artifacts/
 - **Divergence Subdirectories**: Created only when `diff.equal == false`
 - **Repro Scripts**: Shell scripts in divergence subdirectories, made executable on Unix
 
-## Summary CSV Schema (Phase 2)
+## Summary CSV Schema (Phase 4)
 
 ```csv
-run_id,core,input,native_status,sp1_status,equal,reason,elapsed_native_ms,elapsed_sp1_ms,timing_delta_ms
-20251021_040225_fib,fib,inputs/fib_24.json,Ok,Ok,true,,0,31,31
-20251021_041600_timeout_test,timeout_test,inputs/timeout_infinite.json,Timeout,Timeout,true,,30000,30000,0
+run_id,core,input,native_status,sp1_status,equal,reason,elapsed_native_ms,elapsed_sp1_ms,timing_delta_ms,repro_path,generator,base_seed,mutation_ops,rng_seed,zkvm_target,sp1_version,rustc_version
+20251021_040225_fib,fib,inputs/fib_24.json,Ok,Ok,true,,0,31,31,,hand_written,,,,,sp1,cargo-prove-cli 3.3.0,rustc 1.82.0
+20251021_041600_timeout_test,timeout_test,inputs/timeout_infinite.json,Timeout,Timeout,true,,30000,30000,0,,hand_written,,,,,sp1,cargo-prove-cli 3.3.0,rustc 1.82.0
+20251021_041009_panic_test,panic_test,inputs/panic_no.json,Ok,Ok,false,"commit stream mismatch: ...",0,40,40,artifacts/20251021_041009_panic_test/,hand_written,,,,,sp1,cargo-prove-cli 3.3.0,rustc 1.82.0
 ```
 
-### Columns (Phase 2)
+### Columns (Phase 2 + Phase 4)
+
+**Core Columns** (Phase 2):
 - `run_id`: Unique identifier (timestamp + core name)
 - `core`: Core name (e.g., "fib", "panic_test")
 - `input`: Input file path
@@ -51,6 +54,16 @@ run_id,core,input,native_status,sp1_status,equal,reason,elapsed_native_ms,elapse
 - `elapsed_native_ms`: Native execution time in milliseconds
 - `elapsed_sp1_ms`: SP1 execution time in milliseconds
 - `timing_delta_ms`: Absolute timing difference
+
+**Future-Proofing Columns** (Phase 4):
+- `repro_path`: Path to divergence folder (empty if no divergence), e.g., "artifacts/20251021_041009_panic_test/"
+- `generator`: Program source ("hand_written" for seeds, "mutated" in Phase 5, "rustsmith" in Phase 6)
+- `base_seed`: For mutations, the original seed (empty for hand-written seeds, populated in Phase 5)
+- `mutation_ops`: Comma-separated list of mutation operators applied (empty for now, populated in Phase 5)
+- `rng_seed`: Random seed for reproducibility (empty for deterministic seeds, populated in Phase 6)
+- `zkvm_target`: Target zkVM ("sp1" for now, "risc0"/"openvm" in Phase 8)
+- `sp1_version`: SP1 toolchain version for reproducibility
+- `rustc_version`: Rust compiler version for reproducibility
 
 ## Triage Workflow (Phase 2+)
 
@@ -71,7 +84,7 @@ run_id,core,input,native_status,sp1_status,equal,reason,elapsed_native_ms,elapse
 
 - **Phase 1**: Basic JSON logs per run ✅
 - **Phase 2**: Repro scripts + CSV summary + divergence subdirectories ✅
-- **Phase 4**: Enhanced structured logging (additional fields/formats)
+- **Phase 4**: Enhanced CSV schema with future-proofing columns ✅
 - **Phase 7**: Validation reports
 - **Phase 13**: Iteration reports
 

@@ -50,12 +50,12 @@ make run CORE=guest/cores/io_echo INPUT=inputs/io_echo_1kb.json
 
 **Expected Output**: Both runners succeed, length=1024, commits match
 
-### Test Case 3: Large Data (100KB)
+### Test Case 3: Small Data (10 bytes)
 ```bash
-make run CORE=guest/cores/io_echo INPUT=inputs/io_echo_100kb.json
+make run CORE=guest/cores/io_echo INPUT=inputs/io_echo_small.json
 ```
 
-**Expected Output**: Both runners succeed, length=102400, commits match
+**Expected Output**: Both runners succeed, length=10, commits match
 
 ## Target Vulnerabilities
 

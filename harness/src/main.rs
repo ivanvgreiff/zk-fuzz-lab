@@ -296,6 +296,40 @@ make run CORE={core} INPUT={input}
     )
 }
 
+/// Get SP1 version string
+fn get_sp1_version() -> String {
+    Command::new("cargo")
+        .args(["prove", "--version"])
+        .output()
+        .ok()
+        .and_then(|output| {
+            if output.status.success() {
+                String::from_utf8(output.stdout).ok()
+            } else {
+                None
+            }
+        })
+        .map(|s| s.trim().to_string())
+        .unwrap_or_else(|| "unknown".to_string())
+}
+
+/// Get rustc version string
+fn get_rustc_version() -> String {
+    Command::new("rustc")
+        .args(["--version"])
+        .output()
+        .ok()
+        .and_then(|output| {
+            if output.status.success() {
+                String::from_utf8(output.stdout).ok()
+            } else {
+                None
+            }
+        })
+        .map(|s| s.trim().to_string())
+        .unwrap_or_else(|| "unknown".to_string())
+}
+
 /// Append run results to CSV summary
 fn append_to_csv_summary(
     run_id: &str,
@@ -331,8 +365,28 @@ fn append_to_csv_summary(
             "elapsed_native_ms",
             "elapsed_sp1_ms",
             "timing_delta_ms",
+            // Phase 4: Future-proofing columns
+            "repro_path",
+            "generator",
+            "base_seed",
+            "mutation_ops",
+            "rng_seed",
+            "zkvm_target",
+            "sp1_version",
+            "rustc_version",
         ])?;
     }
+
+    // Determine repro_path (artifacts/<run_id>/ if divergence, empty otherwise)
+    let repro_path = if !diff.equal {
+        format!("artifacts/{}/", run_id)
+    } else {
+        String::new()
+    };
+
+    // Get version strings (cached for performance in future batch runs)
+    let sp1_version = get_sp1_version();
+    let rustc_version = get_rustc_version();
 
     // Write data row
     writer.write_record(&[
@@ -346,6 +400,15 @@ fn append_to_csv_summary(
         &native_result.elapsed_ms.to_string(),
         &sp1_result.elapsed_ms.to_string(),
         &diff.timing_delta_ms.map(|d| d.to_string()).unwrap_or_else(|| "".to_string()),
+        // Phase 4: Future-proofing columns
+        &repro_path,
+        "hand_written",  // generator (Phase 5 will populate with "mutated", Phase 6 with "rustsmith")
+        "",              // base_seed (empty for now, Phase 5 will populate)
+        "",              // mutation_ops (empty for now, Phase 5 will populate)
+        "",              // rng_seed (empty for now, Phase 6 will populate)
+        "sp1",           // zkvm_target (Phase 8 will add risc0, openvm)
+        &sp1_version,
+        &rustc_version,
     ])?;
 
     writer.flush()?;

@@ -63,11 +63,32 @@ Generated only on divergence:
 harness run --core guest/cores/fib.rs --input inputs/fib_24.json
 ```
 
+## CSV Summary (`artifacts/summary.csv`) - Phase 4
+
+Every run appends a row with 18 columns:
+
+**Core Columns**:
+- `run_id`, `core`, `input`
+- `native_status`, `sp1_status`, `equal`, `reason`
+- `elapsed_native_ms`, `elapsed_sp1_ms`, `timing_delta_ms`
+
+**Future-Proofing Columns** (Phase 4):
+- `repro_path` - Direct link to divergence folder
+- `generator` - "hand_written", "mutated" (P5), "rustsmith" (P6)
+- `base_seed` - Original seed for mutations (P5)
+- `mutation_ops` - Comma-separated operators (P5)
+- `rng_seed` - For reproducibility (P6)
+- `zkvm_target` - "sp1", "risc0", "openvm" (P8)
+- `sp1_version` - zkVM version tracking
+- `rustc_version` - Compiler version tracking
+
+See `artifacts/README.md` for full schema documentation.
+
 ## Phase Schedule
 
-- **Phase 1**: Basic CLI that runs native+sp1+diff
-- **Phase 2**: Add repro script generation
-- **Phase 4**: Structured CSV/JSON logging
+- **Phase 1**: Basic CLI that runs native+sp1+diff ✅
+- **Phase 2**: Add repro script generation + CSV logging ✅
+- **Phase 4**: Enhanced CSV schema (18 columns with future-proofing) ✅
 - **Phase 5**: Integration with mutators
 - **Phase 6**: Integration with generators
 
