@@ -11,6 +11,7 @@ members = [
     "runners/sp1",
     "oracles/rust_eq",
     "harness",
+    "mutators/source_mut",
 ]
 
 [workspace.dependencies]

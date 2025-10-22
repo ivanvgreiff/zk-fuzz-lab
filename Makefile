@@ -14,15 +14,16 @@ help:
 	@echo "  make build          - Build all workspace members"
 	@echo "  make test           - Run all tests"
 	@echo "  make run CORE=<core> INPUT=<input> - Run differential test"
+	@echo "  make batch          - Run all seed programs (Phase 3)"
+	@echo "  make fuzz CORE=<core|all> - Run input mutation fuzzing (Phase 5)"
 	@echo "  make clean          - Remove artifacts and build outputs"
 	@echo "  make help           - Show this help message"
 	@echo ""
-	@echo "Example:"
+	@echo "Examples:"
 	@echo "  make run CORE=guest/cores/fib INPUT=inputs/fib_24.json"
-	@echo ""
-	@echo "Phase 2+ targets (coming soon):"
-	@echo "  make batch          - Run all seed programs"
-	@echo "  make fuzz           - Start fuzzing campaign"
+	@echo "  make fuzz CORE=io_echo"
+	@echo "  make fuzz CORE=io_echo,arithmetic"
+	@echo "  make fuzz CORE=all"
 
 # Phase 0 deliverable: verify scaffold is set up correctly
 smoke:
@@ -90,6 +91,15 @@ batch:
 	@echo ""
 	@echo "✅ Batch tests complete!"
 	@echo "📊 Summary available in artifacts/summary.csv"
+
+# Phase 5: Run input mutation fuzzing
+# Usage: make fuzz CORE=io_echo  OR  make fuzz CORE=all  OR  make fuzz CORE=io_echo,arithmetic
+fuzz:
+ifndef CORE
+	$(error CORE is not set. Usage: make fuzz CORE=io_echo  OR  make fuzz CORE=all)
+	$(error Available cores: fib, panic_test, timeout_test, io_echo, arithmetic, simple_struct)
+endif
+	@cargo run --release --bin harness -- fuzz --cores $(CORE)
 
 # Clean up generated artifacts
 clean:

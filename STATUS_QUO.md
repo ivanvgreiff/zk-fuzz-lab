@@ -1,8 +1,8 @@
-# 📊 Repository Status Quo (Through Phase 4)
+# 📊 Repository Status Quo (Through Phase 5)
 
-**Last Updated**: October 21, 2025  
-**Phases Complete**: 0, 1, 2, 3, 4  
-**Next Phase**: 5 (Mutators v0 - Natural Operators)
+**Last Updated**: October 22, 2025  
+**Phases Complete**: 0, 1, 2, 3, 4, 5  
+**Next Phase**: 6 (RustSmith Integration)
 
 ---
 
@@ -531,12 +531,47 @@ wsl bash -c 'export PATH=$PATH:... && cargo prove build'
 
 ---
 
+## 📈 Phase 5 Enhancement: Input Mutation Engine
+
+### What Was Added
+- **Systematic input generation** for all 6 cores
+- **~90 total mutations** covering boundary conditions, edge cases, capacity limits
+- **Deterministic generation** (reproducible)
+- **Batch fuzzing**: `make fuzz CORE=all` tests entire corpus
+
+### Mutation Coverage
+
+| Core | Strategy | Mutations | Range |
+|------|----------|-----------|-------|
+| `io_echo` | Length biasing (hybrid) | 32 | 0 bytes → 1MB |
+| `arithmetic` | Boundary values | 27 | 0, 1, 2, MAX/2, MAX-1, MAX for 4 ops |
+| `simple_struct` | String variations | 10 | Empty, short, long, unicode |
+| `fib` | Fibonacci values | 11 | n ∈ {0, 1, 2, 5, ..., 1000} |
+| `panic_test` | Boolean variations | 4 | true/false with messages |
+| `timeout_test` | Iteration variations | 9 | 0 to 10M iterations |
+| **Total** | | **~93** | |
+
+### Test Results (Verified)
+- ✅ `io_echo`: 32/32 passed (100%) - No capacity issues up to 1MB
+- ✅ `arithmetic`: 27/27 passed (100%) - All boundary values handled correctly
+- ✅ CSV logging working (`generator=mutated`, `mutation_ops` populated)
+- ✅ Timing stats: SP1 scales with input size (36ms @ 0b → 18s @ 1MB)
+
+### Usage
+```bash
+make fuzz CORE=io_echo           # Single core (~16 min)
+make fuzz CORE=io_echo,arithmetic  # Multiple (~28 min)
+make fuzz CORE=all                # All 6 cores (~45-60 min)
+```
+
+---
+
 ## 🔮 What's Missing (Future Phases)
 
-### Phase 5-6: Fuzzing & Mutation
-- ❌ Input mutation engine
+### Phase 6: RustSmith Integration
+- ❌ Randomized Rust program generation
 - ❌ Coverage-guided fuzzing
-- ❌ Automated test case generation
+- ❌ Automated program diversity
 
 ### Phase 6-7: Proof Generation
 - ❌ SP1 prove mode (currently execute-only)
@@ -625,10 +660,11 @@ wsl bash -c 'export PATH=$PATH:... && cargo prove build'
 
 ---
 
-**Last Updated**: October 21, 2025  
-**Total Implementation Time**: ~17 hours (Phases 0-4)  
+**Last Updated**: October 22, 2025  
+**Total Implementation Time**: ~19 hours (Phases 0-5)  
 **Build Time (All SP1 Guests)**: ~4 minutes  
 **Test Run Time (`make batch`)**: ~3 minutes  
+**Fuzz Run Time (`make fuzz CORE=all`)**: ~45-60 minutes (~93 mutations)
 
-**Status**: ✅ **OPERATIONAL** - Ready for Phase 5 (Mutators)
+**Status**: ✅ **OPERATIONAL** - Ready for Phase 6 (RustSmith)
 

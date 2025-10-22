@@ -73,9 +73,9 @@ ci/                   # Smoke tests and nightly fuzzing runs
 - **Phase 2** ✅ - Observability (panic capture, timeout handling, repro scripts, CSV logging)
 - **Phase 3** ✅ - Seed programs (I/O echo, arithmetic, simple struct cores + comprehensive inputs)
 - **Phase 4** ✅ - Enhanced logging schema (18-column CSV with future-proofing, version tracking)
+- **Phase 5** ✅ - Input Mutation Engine (~90 systematic input variations across all cores)
 
 ### A1: Rust-Level Differential (In Progress)
-- **Phase 5** ⏳ - Mutators v0 (natural: constants, booleans, branches, input biasing)
 - **Phase 6** ⏳ - RustSmith integration (randomized program generation)
 - **Phase 7** ⏳ - A1 validation (attempt to rediscover 1 SP1 + 1 RISC Zero bug)
 

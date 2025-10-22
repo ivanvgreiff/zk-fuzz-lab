@@ -41,19 +41,21 @@ Examples:
 
 ## Determinism
 
-- All inputs are **fixed** and **versioned**
-- If randomization is used (Phase 5+), the **RNG seed** is stored in the input file or logged separately
+- **Phase 1-3**: All inputs are **fixed** and **versioned** (stored in this directory)
+- **Phase 5**: Input mutations are **generated on-the-fly** (deterministic, not stored in git)
+- **Phase 6+**: Randomized inputs will have **RNG seed** logged for reproducibility
 - This ensures every run is **reproducible**
 
-## Capacity Biasing (Phase 5+)
+## Input Mutations (Phase 5)
 
-With respect to the SP1 allocator overflow bug, the `capacity` variable scales with **guest-controlled data size**. We bias input sizes to stress capacity:
+**Generated vs Stored**: Phase 5 introduces `make fuzz` which generates ~93 input mutations on-the-fly:
+- **Base inputs** (this directory): Used as starting point for mutations
+- **Generated mutations** (`artifacts/mutations/`): Created during fuzzing, not in git
+- **Mutation strategies**: Length biasing, boundary values, string variations, etc.
 
-- `io_echo_0.json`: 0 bytes
-- `io_echo_1.json`: 1 byte
-- `io_echo_1kb.json`: 1024 bytes
-- `io_echo_1mb.json`: 1 MB
-- `io_echo_max.json`: Maximum safe size
+Example: `io_echo` generates 32 sizes (0b → 1MB) from base `io_echo_1kb.json`
+
+**Why not store mutations?**: Would bloat git with ~93 JSON files. Instead, we generate deterministically from base inputs.
 
 ## Available Inputs
 
@@ -90,9 +92,9 @@ With respect to the SP1 allocator overflow bug, the `capacity` variable scales w
 
 ## Phase Schedule
 
-- **Phase 1**: Manual inputs for fibonacci
-- **Phase 2**: Inputs for panic and timeout testing
-- **Phase 3**: Inputs for I/O echo, arithmetic, struct seeds
-- **Phase 5**: Size-biased inputs for capacity exploration
-- **Phase 6**: Auto-generated inputs from RustSmith
+- **Phase 1**: Manual inputs for fibonacci ✅
+- **Phase 2**: Inputs for panic and timeout testing ✅
+- **Phase 3**: Inputs for I/O echo, arithmetic, struct seeds ✅
+- **Phase 5**: On-the-fly input generation (mutations from base inputs) ✅
+- **Phase 6**: Auto-generated inputs from RustSmith programs
 
